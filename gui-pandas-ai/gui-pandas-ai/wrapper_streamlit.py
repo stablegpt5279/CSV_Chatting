@@ -18,6 +18,7 @@ from pandas_profiling import ProfileReport
 import seaborn as sns
 import scipy.stats as stats
 import datapane as dp
+import os
 
 def check_password():
     """Returns `True` if the user had a correct password."""
@@ -166,12 +167,12 @@ def render_sql_view(df):
     view = dp.Blocks(dp.DataTable(df))
     return dp.save_report(view, path="SQL_Rendered_View.html", open=True)
 
-if check_password():
-    st.title("A Simple GUI-based APP for making DataFrames Coversational with key data analysis utilities!!!")
-    fig = None
+#if check_password():
+st.title("A Simple GUI-based APP for making DataFrames Coversational with key data analysis utilities!!!")
+fig = None
     #response_history = []
-    response_history = st.session_state.get("response_history", [])
-    if "openai_key" not in st.session_state:
+response_history = st.session_state.get("response_history", [])
+if "openai_key" not in st.session_state:
         with st.form("API key"):
             key = st.text_input("OpenAI Key", value="", type="password")
             if st.form_submit_button("Submit"):
@@ -179,9 +180,9 @@ if check_password():
                 st.session_state.prompt_history = []
                 st.session_state.df = None
     
-    if "openai_key" in st.session_state:
+if "openai_key" in st.session_state:
         st.write(
-            "Looking for an example *.csv-file?, check [here](https://github.com/ajayarunachalam/pynmsnn/blob/main/data/iris_data.csv)."
+            "Looking for an example *.csv-file?, check [here](https://github.com/stablegpt5279/CSV_Chatting/blob/main/gui-pandas-ai/data/iris.csv)."
         )
         if st.session_state.df is None:
             uploaded_file = st.file_uploader(
@@ -244,21 +245,23 @@ if check_password():
         st.subheader("Prompt response:")
         for response in response_history:
             st.write(response)
+        if os.path.exists("/content/CSV_Chatting/gui-pandas-ai/gui-pandas-ai/temp_chart.png"):
+            st.image("/content/CSV_Chatting/gui-pandas-ai/gui-pandas-ai/temp_chart.png")
  
-    if st.button("Clear"):
+if st.button("Clear"):
         st.session_state.prompt_history = []
         st.session_state.response_history = []
         st.session_state.df = None
         
-    if st.button("Save Results", key=0):
+if st.button("Save Results", key=0):
         with open("historical_data.txt", "w") as f:
             for response in response_history:
                 f.write(response + "\n")
         if fig is not None:
             fig.savefig("plot.png")  
         
-    st.write('---')
-    st.text('')
-    st.markdown(
-            '`Created by` [Ajay](https://www.linkedin.com/in/ajay-ph-d-4744581a/) | \
-             `Github:` [GitHub](https://github.com/ajayarunachalam/)')
+st.write('---')
+st.text('')
+st.markdown(
+            '`Made and Developed by` [SilverStack](https://colab.research.google.com/drive/1f4763-nK8sl_omSZVOKp5ez-Bfj6G-yQ#scrollTo=lr4TEEqEJYIS) | \
+             `Github:` [GitHub](https://github.com/stablegpt5279/CSV_Chatting)')
